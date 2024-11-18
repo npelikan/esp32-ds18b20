@@ -71,7 +71,13 @@ fn get_temperature<P>(
 {
     info!("Starting temperature measurement");
     // initiate a temperature measurement for all connected devices
-    ds18b20::start_simultaneous_temp_measurement(one_wire_bus, delay);
+    match ds18b20::start_simultaneous_temp_measurement(one_wire_bus, delay) {
+        Ok(_) => (),
+        Err(e) => {
+            error!("Error starting temperature measurement: {:?}", e);
+            return Err(e);
+        }
+    }
 
     // wait until the measurement is done. This depends on the resolution you specified
     // If you don't know the resolution, you can obtain it from reading the sensor data,
